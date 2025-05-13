@@ -2,9 +2,9 @@ import cv2
 import numpy as np
 from pathlib import Path
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Activation, Dropout, Conv2D, GlobalAveragePooling2D
+from tensorflow.keras.layers import Activation, Dropout, Conv2D, GlobalAveragePooling2D, Dense
 from tensorflow.keras.utils import to_categorical
-from keras_squeezenet import SqueezeNet
+from tensorflow.keras.applications import MobileNetV2
 from tensorflow.keras.optimizers import Adam
 
 # path for data images
@@ -14,13 +14,13 @@ CLASS_NAMES = sorted([d.name for d in IMG_SAVE_PATH.iterdir() if d.is_dir()])
 NUM_CLASSES = len(CLASS_NAMES)
 
 def get_model():
+    base_model = MobileNetV2(input_shape=(224, 224, 3), include_top=False, weights='imagenet')
+    base_model.trainable = False  # Freeze the base model
     return Sequential([
-        SqueezeNet(input_shape=(227, 227, 3), include_top=False),
-        Dropout(0.5),
-        Conv2D(NUM_CLASSES, (1, 1), padding='valid'),
-        Activation('relu'),
+        base_model,
         GlobalAveragePooling2D(),
-        Activation('softmax')
+        Dropout(0.5),
+        Dense(NUM_CLASSES, activation='softmax')
     ])
 
 # load and go through images
@@ -35,7 +35,7 @@ for label_dir in IMG_SAVE_PATH.iterdir():
             continue
         img = cv2.imread(str(img_path))
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        img = cv2.resize(img, (227, 227))
+        img = cv2.resize(img, (224, 224))
         dataset.append((img, label_dir.name))
 
 data, labels = zip(*dataset)
