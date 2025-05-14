@@ -25,11 +25,11 @@ def load_images(image_dir):
                 images.append(img)
                 labels.append(CLASS_NAMES.index(label))
             except:
-                print(f"⚠️ Skipped unreadable file: {img_file}")
+                print(f"Skipped unreadable file: {img_file}")
     return np.array(images), np.array(labels)
 
 # Load model and data
-print("🔍 Loading model and test data...")
+print("Loading model and test data...")
 model = load_model("rock-paper-scissors-model.h5")
 X_test, y_true = load_images(TEST_DIR)
 X_test = X_test / 255.0  # Normalize

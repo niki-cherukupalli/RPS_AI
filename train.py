@@ -7,18 +7,18 @@ from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 
-# Image data path
+#image data path
 IMG_SAVE_PATH = Path('image_data')
 IMG_SIZE = (224, 224)
 BATCH_SIZE = 32
-EPOCHS = 30  # Increase epochs with early stopping
+EPOCHS = 30  #increase epochs with early stopping
 VALIDATION_SPLIT = 0.2
 
-# Class names and count
+
 CLASS_NAMES = sorted([d.name for d in IMG_SAVE_PATH.iterdir() if d.is_dir()])
 NUM_CLASSES = len(CLASS_NAMES)
 
-# Data generators with augmentation and normalization
+#data generators with augmentation and normalization
 datagen = ImageDataGenerator(
     preprocessing_function=preprocess_input,
     validation_split=VALIDATION_SPLIT,
@@ -47,7 +47,7 @@ val_generator = datagen.flow_from_directory(
     shuffle=False
 )
 
-# Build the model
+#the model
 def get_model():
     base_model = MobileNetV2(input_shape=(224, 224, 3), include_top=False, weights='imagenet')
     base_model.trainable = False  # Freeze base model initially
@@ -60,7 +60,7 @@ def get_model():
     ])
     return model
 
-# Compile and train the model (initial training)
+#initial training
 model = get_model()
 model.compile(optimizer=Adam(learning_rate=1e-4), loss='categorical_crossentropy', metrics=['accuracy'])
 
@@ -76,19 +76,19 @@ model.fit(
     callbacks=callbacks
 )
 
-# Fine-tune the base model (unfreeze top layers)
+#unfreeze top layers
 base_model = model.layers[0]
 base_model.trainable = True
 
-# Freeze the bottom layers, fine-tune top
+#freeze the bottom layers + fine-tune top
 fine_tune_at = 100
 for layer in base_model.layers[:fine_tune_at]:
     layer.trainable = False
 
-# Recompile with a lower learning rate
+#lower learning rate for fine-tuning
 model.compile(optimizer=Adam(learning_rate=1e-5), loss='categorical_crossentropy', metrics=['accuracy'])
 
-# Continue training with fine-tuning
+
 model.fit(
     train_generator,
     validation_data=val_generator,
@@ -96,6 +96,6 @@ model.fit(
     callbacks=callbacks
 )
 
-# Save the model
+#save the model
 model.save("rock-paper-scissors-model.h5")
 print("Model saved as rock-paper-scissors-model.h5")
