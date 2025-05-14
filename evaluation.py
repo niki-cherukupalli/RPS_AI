@@ -7,7 +7,7 @@ from tqdm import tqdm
 from pathlib import Path
 
 #match class names with those used in training
-IMG_SIZE = 227
+IMG_SIZE = 224
 TEST_DIR = Path("image_data")  # same structure as training dir
 CLASS_NAMES = sorted([d.name for d in TEST_DIR.iterdir() if d.is_dir()])
 OUTPUT_FILE = "metrics_report.txt"

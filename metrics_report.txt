@@ -1,0 +1,25 @@
+Rock-Paper-Scissors Model Evaluation Report
+==================================================
+
+Accuracy: 0.9962
+Precision (macro avg): 0.9963
+Recall (macro avg): 0.9963
+F1 Score (macro avg): 0.9962
+
+Confusion Matrix:
+[[200   0   0   0]
+ [  0 198   2   0]
+ [  0   0 200   0]
+ [  1   0   0 199]]
+
+Classification Report:
+              precision    recall  f1-score   support
+
+        none       1.00      1.00      1.00       200
+       paper       1.00      0.99      0.99       200
+        rock       0.99      1.00      1.00       200
+    scissors       1.00      0.99      1.00       200
+
+    accuracy                           1.00       800
+   macro avg       1.00      1.00      1.00       800
+weighted avg       1.00      1.00      1.00       800
